@@ -6,6 +6,7 @@ class AudioList{
     protected int $nbPistes = 0;
     protected int $dureeTotale = 0;
     protected array $pistes = [];
+    protected ?int $id = null;
 
     public function __construct(string $nom,array $pistes =[] ){
         $this->nom=$nom;
@@ -25,6 +26,7 @@ class AudioList{
 
         throw new InvalidPropertyNameException("Propriete non existante : " . $att);
     }
+    public function setId(int $id): void {$this->id=$id;}
 }
 
 ?>

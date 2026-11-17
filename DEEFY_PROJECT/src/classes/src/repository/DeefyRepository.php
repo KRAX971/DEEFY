@@ -39,7 +39,49 @@ class DeefyRepository{
         return self::$instance;
     }
     public function findAllPlaylists(): array {
-        $stmt = $this->pdo->query("SELECT id AS id, nom AS nom FROM playlist");
+        $stmt = $this->pdo->query("SELECT id, nom FROM playlist");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function findPlaylistById(int $id): ?Playlist{
+        $stmt = $this->pdo->prepare("SELECT id, nom FROM playlist WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$row) {
+            return null;
+        }
+        $playlist = new Playlist($row['nom']);
+        $playlist->setId($row['id']);
+        $stmtTracks=$this->pdo->prepare("SELECT t.id AS id, t.titre AS titre, t.genre AS genre, t.duree AS duree, 
+                   t.filename AS filename, t.type AS type, t.artiste_album AS artiste_album, 
+                   t.titre_album AS titre_album, t.annee_album AS annee_album, 
+                   t.numero_album AS numero_album, t.auteur_podcast AS auteur_podcast, 
+                   t.date_posdcast AS date_posdcast
+                    FROM track t
+                    JOIN playlist2track p2t ON t.id = p2t.id_track
+                    WHERE p2t.id_pl = :id_pl
+                    ORDER BY p2t.no_piste_dans_liste ASC
+        ");
+        $stmtTracks->execute(['id_pl' => $id]);
+        $pistes=[];
+        while ($rowTrack = $stmtTracks->fetch(PDO::FETCH_ASSOC)) {
+            if($rowTrack['type']==='A'){
+                $piste=new AlbumTrack($rowTrack['titre'],$rowTrack['filename']);
+                $piste->setGenre($rowTrack['genre']);
+                $piste->setDuree((int) $rowTrack['duree']);
+                $piste->setArtiste($rowTrack['artiste_album']);
+                $piste->setTitreAlbum($rowTrack['titre_album']);
+                $piste->setAnneeAlbum((int) $rowTrack['annee_album']);
+                $piste->setNumeroAlbum((int) $rowTrack['numero_album']);
+            }else{
+                $piste=new PodcastTrack($rowTrack['titre'],$rowTrack['filename']);
+                $piste->setGenre($rowTrack['genre']);
+                $piste->setDuree((int)$rowTrack['duree']);
+                $piste->setAuteur($rowTrack['auteur_podcast']);
+            }
+            $pistes[] = $piste;
+        }
+        $playlist->ajouterPistes($pistes);
+        return $playlist;
     }
 }
