@@ -9,18 +9,17 @@ use iutnc\deefy\audio\tracks\AlbumTrack;
 use iutnc\deefy\audio\tracks\PodcastTrack;
 
 class DeefyRepository{
-    private PDO $PDO;
+    private PDO $pdo;
     private static ?DeefyRepository $instance = null;
     private static array $config = [];
 
-    private function __construct(array $conf)
-    {
-        $dsn = "{$conf['driver']}:host={$conf['host']};dbname={$conf['dbname']};charset=utf8";
-        $this->PDO = new PDO($dsn, $conf['username'], $conf['password'],[
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        ]);
+    private function __construct(array $conf){
+        $port = $conf['port'] ?? 1521;
+        $dsn = "oci:dbname=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={$conf['host']})(PORT={$port}))(CONNECT_DATA=(SID={$conf['database']})));charset=AL32UTF8";
+
+        $this->pdo = new PDO($dsn, $conf['username'], $conf['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_PERSISTENT => true,PDO::ATTR_CASE => PDO::CASE_LOWER]);
     }
+
 
     public static function setConfig(string $file):void{
         $conf = parse_ini_file($file);
@@ -38,5 +37,9 @@ class DeefyRepository{
             self::$instance = new DeefyRepository(self::$config);
         }
         return self::$instance;
-}
+    }
+    public function findAllPlaylists(): array {
+        $stmt = $this->pdo->query("SELECT id AS id, nom AS nom FROM playlist");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
