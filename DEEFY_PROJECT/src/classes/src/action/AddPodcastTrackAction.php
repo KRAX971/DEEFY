@@ -5,7 +5,7 @@ namespace iutnc\deefy\action;
 use iutnc\deefy\render\Renderer;
 use iutnc\deefy\render\AudioListRenderer;
 use iutnc\deefy\audio\tracks\PodcastTrack;
-
+use iutnc\deefy\repository\DeefyRepository;
 class AddPodcastTrackAction extends Action {
 
     public function execute(): string {
@@ -46,8 +46,8 @@ class AddPodcastTrackAction extends Action {
             $piste->setAuteur($auteur);
         }
         $piste->setDuree(max(0, $duree));
+        DeefyRepository::getInstance()->addTrackPlaylist($playlist->id, $piste);
         $playlist->ajouterPiste($piste);
-
         $_SESSION['playlist'] = serialize($playlist);
 
         $renderer = new AudioListRenderer($playlist);

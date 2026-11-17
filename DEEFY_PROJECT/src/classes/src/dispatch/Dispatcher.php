@@ -31,6 +31,7 @@ class Dispatcher {
     <nav>
         <a href="?action=default">Accueil</a> |
         <a href="?action=playlist">Ma playlist</a> |
+        <a href="?action=playlists">Mes playlists</a> |
         <a href="?action=add-playlist">Créer playlist</a> |
         <a href="?action=add-track">Ajouter piste</a>
         <a href="?action=add-user">Inscription</a> |

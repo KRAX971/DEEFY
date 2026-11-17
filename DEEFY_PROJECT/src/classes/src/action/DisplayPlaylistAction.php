@@ -4,32 +4,30 @@ declare(strict_types=1);
 namespace iutnc\deefy\action;
 use iutnc\deefy\render\Renderer;
 use iutnc\deefy\render\AudioListRenderer;
+use iutnc\deefy\repository\DeefyRepository;
 
-class DisplayPlaylistAction extends Action {
+class DisplayPlaylistAction extends Action{
 
-    public function execute(): string {
+    public function execute(): string
+    {
 
-        if (!isset($_SESSION['playlist'])) {
-    return '<p>Aucune playlist courante.</p>
-            <p><a href="?action=add-playlist">Créer une playlist</a></p>';
-}
-
-$playlist = unserialize($_SESSION['playlist']);
-return (new AudioListRenderer($playlist))->render(Renderer::LONG)
-     . '<p><a href="?action=add-track">Ajouter une piste</a></p>';
-
-     
-        $html = '<h2>' . htmlspecialchars($playlist->nom) . '</h2>';
-        $html .= '<p>' . $playlist->nbPistes . ' piste(s) - durée totale : '
-               . $playlist->dureeTotale . ' s</p><ul>';
-
-        foreach ($playlist->pistes as $piste) {
-            $html .= '<li>' . htmlspecialchars($piste->titre);
-            if ($piste->auteur !== null) {
-                $html .= ' (' . htmlspecialchars($piste->auteur) . ')';
+        if (isset($_GET['id'])) {
+            $playlist = DeefyRepository::getInstance()->findPlaylistById((int)$_GET['id']);
+            if ($playlist === null) {
+                return '<p>Playlists introuvables</p>
+                        <p><a href="?action=playlists">Retour aux playlists</a></p>';
             }
-            $html .= '</li>';
+            $_SESSION['playlist'] = serialize($playlist);
+        } else {
+            if (isset($_SESSION['playlist'])) {
+                $playlist = unserialize($_SESSION['playlist']);
+            } else {
+                return '<p>Playlists introuvables</p>
+                    <p><a href="?action=playlists">Mes playlists</a> |
+                <a href="?action=add-playlist">Créer une playlist</a></p>';
+            }
         }
-        return $html . '</ul>';
+        return (new AudioListRenderer($playlist))->render(Renderer::LONG)
+            . '<p><a href="?action=add-track">Ajouter une piste</a></p>';
     }
 }
