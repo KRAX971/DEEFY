@@ -3,15 +3,6 @@ namespace iutnc\deefy\audio\tracks;
 use iutnc\deefy\exception\InvalidPropertyNameException;
 use iutnc\deefy\exception\InvalidPropertyValueException;
 
-/**
- * Classe abstraite AudioTrack
- * 
- * Représente la structure de base commune à toutes les pistes audio (albums, podcasts, etc.).
- * Elle définit les attributs généraux (titre, genre, durée, nom du fichier audio)
- * et implémente la méthode __toString() pour exporter les propriétés de la piste au format JSON.
- */
-
-
 
 abstract class AudioTrack {
     protected string $titre;
@@ -20,12 +11,12 @@ abstract class AudioTrack {
     protected string $nomFichier;
     protected ?string $artiste = null;
 
-
+    //constructeur de audioTrack
     public function __construct(string $titre, string $chemin) {
         $this->titre = $titre;
         $this->nomFichier = $chemin;
     }
-
+    //permet d'acceder aux proprieter de AudioTrack
      public function __get(String $att):mixed{
      if (property_exists($this,$att)){
             return $this->$att;

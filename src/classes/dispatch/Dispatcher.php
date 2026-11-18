@@ -34,7 +34,6 @@ class Dispatcher {
         <a href="?action=playlists">Mes playlists</a> |
         <a href="?action=add-playlist">Créer playlist</a> |
         <a href="?action=add-track">Ajouter piste</a>
-        <a href="?action=add-user">Inscription</a> |
     </nav>
     <hr>
     $html
