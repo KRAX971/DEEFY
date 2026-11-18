@@ -13,17 +13,6 @@ public function ajouterPiste(AudioTrack $piste): void {
     }
 }
 
-public function supprimerPiste(int $indice): void {
-    if (isset($this->pistes[$indice])) {
-        $this->dureeTotale -= $this->pistes[$indice]->duree;
-        unset($this->pistes[$indice]);
-        $this->pistes = array_values($this->pistes);
-        $this->nbPistes = count($this->pistes);
-    }
-}
-
-    
-
         public function ajouterPistes(array $nouvellesPistes): void {
         foreach ($nouvellesPistes as $piste) {
             $this->ajouterPiste($piste);
