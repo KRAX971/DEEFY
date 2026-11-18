@@ -1,20 +1,16 @@
 <?php
 declare(strict_types=1);
 
-require_once 'src/classes/src/loader/Psr4Loader.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
-use loader\Psr4Loader;
 use iutnc\deefy\dispatch\Dispatcher;
+use iutnc\deefy\repository\DeefyRepository;
 use iutnc\deefy\action\DefaultAction;
+use iutnc\deefy\action\MyPlaylistsAction;
 use iutnc\deefy\action\DisplayPlaylistAction;
 use iutnc\deefy\action\AddPlaylistAction;
 use iutnc\deefy\action\AddPodcastTrackAction;
 use iutnc\deefy\action\AddUserAction;
-use iutnc\deefy\repository\DeefyRepository;
-use iutnc\deefy\action\MyPlaylistsAction;
-
-$loader = new Psr4Loader('iutnc\\deefy\\', __DIR__ . '/src/classes/src');
-$loader->register();
 
 session_start();
 

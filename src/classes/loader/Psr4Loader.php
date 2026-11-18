@@ -1,5 +1,5 @@
 <?php
-namespace loader;
+namespace iutnc\deefy\loader;
 
  class Psr4Loader{
     private string $prefix;
